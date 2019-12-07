@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Draw Application</title>
+
+<script type="text/javascript" src="Common/webgl-utils.js"></script>
+<script type="text/javascript" src="Common/initShaders.js"></script>
+<script type="text/javascript" src="Common/MV.js"></script>
+<script type="text/javascript" src="vs.js"></script>
+<script type="text/javascript" src="fs.js"></script>
+<script type="text/javascript" src="ortho_cube.js"></script>
+<script type="text/javascript" src="matrix.js"></script>
+</head>
+
+<body>
+<div style="float:left">
+<canvas id="gl-canvas" width="900" height="900">
+        
+
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+
+<div class="slidecontainer">
+    <input type="range" min="5" max="1200" value="350" class="slider" id="zoom">
+    Zoom level
+</div>
+
+<div class="slidecontainer">
+    <input type="range" min="1" max="10" value="1" class="slider" id="speed">
+    Simulation Speed
+</div>
+
+
+</body>
+
+</html>
