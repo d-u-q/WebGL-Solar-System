@@ -22,9 +22,8 @@ var tri_colors = [];
 var sph_verts = [];
 var cnorm_verts = [];
 var snorm_verts = [];
-var norm_verts = [];
 var tex_verts = [];
-var sun_texture, earth_texture;
+var sun_texture, star_texture;
 var planet_textures = [];
 var planetNum = 0;
 var pn = 0;
@@ -36,13 +35,13 @@ var M_Loc, C_Loc, C_Per;
 window.onload = function init() {
   // get canvas handle
   canvas = document.getElementById("gl-canvas");
-
+  
   // WebGL Initialization
   gl = WebGLUtils.setupWebGL(canvas, { preserveDrawingBuffer: true });
   if (!gl) {
     alert("WebGL isn't available");
   }
-  gl.clearColor(0.1, 0.1, 0.1, 1.0);
+  gl.clearColor(0.1, 0.1, 0.1, 0.0);
   gl.clear(gl.COLOR_BUFFER_BIT);
   
   // create shaders, compile and link program
@@ -92,22 +91,7 @@ window.onload = function init() {
 
   gl.enable(gl.DEPTH_TEST);
 
-  var lightAmbient = vec4(0.0, 0.0, 0.0, 0.0);
-  var lightDiffuse = vec4(0.0, 0.0, 0.0, 0.0);
-  var lightSpecular = vec4(0.0, 0.0, 0.0, 0.0);
-  var materialAmbient = vec4(0.0, 0.0, 0.0, 0.0);
-  var materialDiffuse = vec4(0.0, 0.0, 0.0, 0.0);
-  var materialSpecular = vec4(0.0, 0.0, 0.0, 0.0);
- 
-  ambientProduct = mult(lightAmbient, materialAmbient);
-  gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"), flatten(ambientProduct));
-  diffuseProduct = mult(lightDiffuse, materialDiffuse);
-  gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"), flatten(diffuseProduct));
-  specularProduct = mult(lightSpecular, materialSpecular);  
-  gl.uniform4fv(gl.getUniformLocation(program, "specularProduct"), flatten(specularProduct));
-
-  //var lightPosition = vec4(0.0, 0.0, 0.0, 1.0);
-  var lightPosition = vec4(0.0, 0.0, 0.0, 1.0);
+  var lightPosition = vec4(0.0, 0.0, 0.0, 0.0);
   gl.uniform4fv(gl.getUniformLocation(program, "lightPosition"), lightPosition);
   var shininess = 1.0;
   gl.uniform1f(gl.getUniformLocation(program, "shininess"), shininess);
@@ -227,7 +211,7 @@ window.onload = function init() {
     planet_textures.push(configureTexture(image9));
     console.log ("Image Size:" + image9.width + "," + image9.height);
   }
-
+  
   render();
 };
 
@@ -239,7 +223,7 @@ function render() {
   speed = parseInt(document.getElementById("speed").value);
 
   var M_sun, M_camera;
-  angle += .1*speed;
+  angle += .05*speed;
   angle2 = angle*10;
   var rot = rotation4x4(angle/2, "y");
 
@@ -397,74 +381,6 @@ function createPersp(l, r, t, b, f, n){
   M[3][3] = 0;
 
   return M;
-}
-
-// create a colored cube with 8 vertices and colors at
-// at each vertex
-function createColorCube() {
-  createQuad(1, 0, 3, 2);
-  createQuad(2, 3, 7, 6);
-  createQuad(3, 0, 4, 7);
-  createQuad(6, 5, 1, 2);
-  createQuad(4, 5, 6, 7);
-  createQuad(5, 4, 0, 1);
-}
-
-function createQuad(a, b, c, d) {
-  var vertices = getCubeVertices();
-  var vertex_colors = getCubeVertexColors();
-
-  // Each quad is rendered as two triangles as WebGL cannot
-  // directly render a quad
-
-  var indices = [a, b, c, a, c, d];
-
-  for (var i = 0; i < indices.length; ++i) {
-    verts.push(vertices[indices[i]]);
-    vert_colors.push(vertex_colors[indices[i]]);
-  }
-}
-
-function getCubeVertices() {
-  return [
-    [-0.25, -0.25, 0.25],
-    [-0.25, 0.25, 0.25],
-    [0.25, 0.25, 0.25],
-    [0.25, -0.25, 0.25],
-    [-0.25, -0.25, -0.25],
-    [-0.25, 0.25, -0.25],
-    [0.25, 0.25, -0.25],
-    [0.25, -0.25, -0.25]
-  ];
-}
-function getCubeVertexColors() {
-  return [
-    [0.0, 0.0, 0.0, 1.0], // black
-    [1.0, 0.0, 0.0, 1.0], // red
-    [1.0, 1.0, 0.0, 1.0], // yellow
-    [0.0, 1.0, 0.0, 1.0], // green
-    [0.0, 0.0, 1.0, 1.0], // blue
-    [1.0, 0.0, 1.0, 1.0], // magenta
-    [1.0, 1.0, 1.0, 1.0], // white
-    [0.0, 1.0, 1.0, 1.0] // cyan
-    
-  ];
-}
-
-function createQuad(a, b, c, d) {
-  var vertices = getCubeVertices();
-  var vertex_colors = getCubeVertexColors();
-
-  // Each quad is rendered as two triangles as WebGL cannot
-  // directly render a quad
-
-  var indices = [a, b, c, a, c, d];
-
-  for (var i = 0; i < indices.length; ++i) {
-    tri_verts.push(vertices[indices[i]]);
-    tri_colors.push(vertex_colors[indices[i]]);
-    cnorm_verts.push(vertices[indices[i]])
-  }
 }
 
 function tetrahedron(a, b, c, d, n){
